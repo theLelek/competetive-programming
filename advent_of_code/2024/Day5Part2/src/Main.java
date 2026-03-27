@@ -1,166 +1,76 @@
-// 97 is the largest element
-
-import java.io.File;
-import java.io.FileNotFoundException;
+// 11145,
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Main {
+    public static void main(String[] args) throws IOException {
+        String input = Files.readString(Path.of("large_input.txt"));
+        String[] inputParts = input.split("\n\n");
+        graph = getAdjacencyList(inputParts[0]);
+        List<List<Integer>> numbers = getNumbers(inputParts[1]);
+        int ans = 0;
 
-
-    public static void main(String[] args) {
-        String path = "full_input.txt";
-        String in = readFile(path);
-        String[] splitted = in.split("\n");
-        Map<Integer, Set<Integer>> graph = initializeMap(splitted);
-        int largestNumber = getLargestNumber(splitted);
-
-        Stack<Integer> stack = new Stack<Integer>();
-        stack = topoSort((HashMap<Integer, Set<Integer>>) graph, largestNumber, stack);
-        Stack<Integer> reversed = reverse(stack);
-
-        ArrayList<ArrayList<Integer>> unsortedNumbers = getUnsortedNumbers(splitted);
-        System.out.println(reversed);
-        System.out.println(getSolution(reversed, unsortedNumbers));
-
-
-
+        for (List<Integer> currentNumbers : numbers) {
+            allowedNumbers = new HashSet<>(currentNumbers);
+            for (int i : currentNumbers) {
+                topoSort(i);
+            }
+            if (! sorted.equals(currentNumbers)) {
+                ans += sorted.get(sorted.size() / 2);
+            }
+            // todo print middle of sorted
+            allowedNumbers = new HashSet<>();
+            visited = new HashSet<>();
+            sorted = new ArrayList<>();
+        }
+        System.out.println(ans);
     }
 
-    public static int getSolution(Stack<Integer> ruleNumbers, ArrayList<ArrayList<Integer>> unsorted) {
-        int sum = 0;
-        for (ArrayList<Integer> unsortedLine : unsorted) {
-            int[] sorted = new int[ruleNumbers.size()];
-            for (int i : unsortedLine) {
-                int foo = ruleNumbers.indexOf(i);
-                sorted[foo] = i;
-            }
-            ArrayList<Integer> arrayListSorted = new ArrayList<>();
-            for (int element : sorted) {
-                if (element != 0) {
-                    arrayListSorted.add(element);
-                }
-            }
-            int middleIndex = arrayListSorted.size() / 2;
-            int middle_element = arrayListSorted.get(middleIndex);
+    static Set<Integer> allowedNumbers = new HashSet<>();
+    static Set<Integer> visited = new HashSet<>();
+    static List<Integer> sorted = new ArrayList<>();
+    static Map<Integer, List<Integer>> graph;
 
-            boolean hasChanged = false;
-            for (int i = 0; i < arrayListSorted.size(); i++) {
-                if (unsortedLine.get(i) != arrayListSorted.get(i)) {
-                    hasChanged = true;
-                    break;
-                }
-            }
-            if (hasChanged) {
-                sum += middle_element;
-                System.out.println(arrayListSorted);
+    public static void topoSort(int currentElement) {
+        if (visited.contains(currentElement)) {
+            return;
+        }
+        visited.add(currentElement);
+        if (! graph.containsKey(currentElement)) {
+            sorted.add(currentElement);
+            return;
+        }
+        for (int element : graph.get(currentElement)) {
+            if (allowedNumbers.contains(element)) {
+                topoSort(element);
             }
         }
-        return sum;
+        sorted.add(currentElement);
     }
 
-    public static ArrayList<ArrayList<Integer>> getUnsortedNumbers(String[] input) {
-        int idx = 0;
-        for (String line : input) {
-            if (line.trim().isEmpty()) {
-                break;
+    public static Map<Integer, List<Integer>> getAdjacencyList(String orderingRules) {
+        Map<Integer, List<Integer>> adjacencyList = new HashMap<>();
+        for (String line : orderingRules.split("\n")) {
+            String[] parts = line.split("\\|");
+            int key = Integer.parseInt(parts[0]);
+            int value = Integer.parseInt(parts[1]);
+            // graph is reversed
+            if (! adjacencyList.containsKey(value)) {
+                adjacencyList.put(value, new ArrayList<>());
             }
-            idx += 1;
+            adjacencyList.get(value).add(key);
         }
-        ArrayList<ArrayList<Integer>> numbers = new ArrayList<ArrayList<Integer>>();
+        return adjacencyList;
+    }
 
-        for (int i = idx + 1; i < input.length; i++) {
-            String line = input[i];
-            ArrayList<Integer> lineNumbers = new ArrayList<Integer>();
-            for (String element : line.split(",")) {
-                lineNumbers.add(Integer.valueOf((element)));
-            }
-            numbers.add(lineNumbers);
+    public static List<List<Integer>> getNumbers(String stringNumbers) {
+        List<List<Integer>> numbers = new  ArrayList<>();
+        for (String line : stringNumbers.split("\n")) {
+            List<Integer> foo = Arrays.stream(line.split(",")).map(Integer::parseInt).toList();
+            numbers.add(foo);
         }
         return numbers;
-    }
-
-    public static Stack<Integer> reverse(Stack<Integer> arr){
-        Stack<Integer> reversed = new Stack<Integer>();
-        for (int i = arr.size() - 1; i >= 0; i--) {
-                reversed.add(arr.get(i));
-        }
-        return reversed;
-    }
-
-    public static Stack<Integer> topoSort(HashMap<Integer, Set<Integer>> graph, int currentKey, Stack<Integer> stack) {
-        // TODO maybe use case for singleton idk :(
-        for (Integer next : graph.get(currentKey)) {
-            if (next == null) {
-                break;
-            }
-
-            topoSort(graph, next, stack);
-        }
-        if (! stack.contains(currentKey)) {
-            stack.add(currentKey);
-        }
-        return stack;
-    }
-
-    // TODO why cant change HashMap to HashMap<Integer>
-    public static Map<Integer, Set<Integer>> initializeMap(String[] in) {
-        Map<Integer, Set<Integer>> graph = new HashMap<>();
-
-        for (String raw : in) {
-            if (raw == null) continue;
-            String line = raw.trim();
-            if (line.isEmpty()) break;
-
-            String[] parts = line.split("\\|");
-            if (parts.length != 2) continue;
-
-            int a = Integer.parseInt(parts[0].trim());
-            int b = Integer.parseInt(parts[1].trim());
-
-            graph.computeIfAbsent(a, k -> new LinkedHashSet<>()).add(b);
-            graph.putIfAbsent(b, new LinkedHashSet<>());
-        }
-
-        return graph;
-    }
-
-    public static int getLargestNumber(String[] in) {
-        HashSet<Integer> rightNumbers = new HashSet<Integer>();
-        for (String raw : in) {
-            String line = raw.trim();
-            if (line.isEmpty()) break;
-
-            String[] parts = line.split("\\|");
-
-            int a = Integer.parseInt(parts[1].trim());
-            rightNumbers.add(a);
-        }
-
-        for (String raw : in) {
-            String line = raw.trim();
-            if (line.isEmpty()) break;
-
-            String[] parts = line.split("\\|");
-            int a = Integer.parseInt(parts[0].trim());
-
-            if (! rightNumbers.contains(a)) {
-                return a;
-            }
-        }
-        return -1;
-    }
-
-    private static String readFile(String path) {
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(new File(path));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        String in = "";
-        while (scanner.hasNext()) {
-            in += scanner.nextLine() + "\n";
-        }
-        return in;
     }
 }
