@@ -12,5 +12,5 @@ add_executable(cses intro/main.cpp
         dp/dice_combinations.cpp
         dp/minimizing_coins.cpp
         intro/number_spiral.cpp
-        aoi/Binomialkoeffizient.cpp
-        binary_search_1.cpp)
+        ../aoi/Binomialkoeffizient.cpp
+)
