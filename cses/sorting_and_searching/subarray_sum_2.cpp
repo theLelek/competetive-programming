@@ -5,13 +5,15 @@
 using namespace std;
 
 int main() {
-    int n; int x; cin >> n; cin >>x;
-    vector<int> numbers;
-    vector<int> prefixSum;
-    map<int, int> map;
+    int n; long long x; cin >> n; cin >>x;
+    vector<long long> numbers;
+    vector<long long> prefixSum;
+    map<long long, long long> map;
+    long long ans = 0;
+    map[0] = 1;
 
-    while (n--) {
-        int current;
+    for (int i = 0; i < n; i++) {
+        long long current;
         cin >> current;
         numbers.push_back(current);
         if (! prefixSum.empty()) {
@@ -19,16 +21,14 @@ int main() {
         } else {
             prefixSum.push_back(current);
         }
-    if (map.contains(1)) {
 
+        if (map.count(prefixSum.at(i) - x)) {
+            ans += map.at(prefixSum.at(i) - x);
         }
-        map.at(x - current) =
+        map.insert({prefixSum.back(), 0});
+        map[prefixSum.back()] += 1;
+//        cout << map.at(prefixSum.at(i) - x) << endl;
     }
-
-    for (int i = 0; i < numbers.size(); i++) {
-
-    }
-    int ans = 0;
     cout << ans;
     return 0;
 }
