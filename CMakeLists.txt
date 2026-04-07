@@ -16,4 +16,5 @@ add_executable(competetive_programming
         cses/intro/repetitions.cpp
         cses/intro/weird_algorithm.cpp
         cses/sorting_and_searching/subarray_sum_2.cpp
+        cses/sorting_and_searching/sum_of_two_values.cpp
 )
