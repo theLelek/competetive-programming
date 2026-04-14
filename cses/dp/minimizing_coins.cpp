@@ -13,25 +13,19 @@ int solveRecursively(int currentTargetSum) {
         return 0;
     }
     if (currentTargetSum < 0) {
-        return INT_MAX;
+        return INT_MAX / 2;
     }
-    if (dp.at(currentTargetSum) != INT_MAX) {
+    if (dp.at(currentTargetSum) != -1) {
         return dp.at(currentTargetSum);
     }
 
-    int foo = INT_MAX;
+    int foo = INT_MAX / 2;
     for (int i = 0; i < coins.size(); i++) {
-        //        currentCoins.push_back(coins[i]);
-        int current = solveRecursively(currentTargetSum - coins[i]);
+        int current = 1 + solveRecursively(currentTargetSum - coins[i]);
         foo = min(foo, current);
-        //        currentCoins.pop_back();
     }
-    dp.at(currentTargetSum) = foo; // TODO index is wrong (will be overriden)
-    if (foo == INT_MAX) {
-        return INT_MAX;
-    } else {
-        return 1 + foo;
-    }
+    dp.at(currentTargetSum) = foo;
+    return foo;
 }
 
 int main() {
@@ -40,12 +34,10 @@ int main() {
         int current; cin >> current;
         coins.push_back(current);
     }
-    vector<int> currentCoins(0);
-    dp.resize(x + 5, INT_MAX);
-
+    dp.resize(x + 5, -1);
     int out =  solveRecursively(x);
 
-    if (out == INT_MAX) {
+    if (out == INT_MAX / 2) {
         cout << -1;
     } else {
         cout << out;
