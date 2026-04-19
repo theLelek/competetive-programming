@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector<int> dp;
+vector<int> dp; // index = coin sum | value = how many combinations
 vector<int> numbers;
 
 int solveRecursively(int targetSum) {
@@ -13,11 +13,15 @@ int solveRecursively(int targetSum) {
     if (targetSum < 0) {
         return 0;
     }
+    if (dp.at(targetSum) != 0) {
+        return dp.at(targetSum);
+    }
 
     int count = 0;
     for (int i = 0; i < numbers.size(); i++) {
         count += solveRecursively(targetSum - numbers.at(i));
     }
+    dp.at(targetSum) = count;
     return count;
 }
 
@@ -28,7 +32,7 @@ int main() {
         numbers.push_back(c);
     }
 
-    dp.resize(n + 5, -1);
+    dp.resize(x + 5, 0);
     cout << solveRecursively(x);
     return 0;
 }
