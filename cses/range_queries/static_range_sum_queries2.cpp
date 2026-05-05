@@ -6,13 +6,13 @@ using namespace std;
 
 int main() {
     int n; int q; cin >> n; cin >> q;
-    vector<int> numbers(n);
+    vector<long long> numbers(n);
     for (int i = 0; i < n; i++) {
         cin >> numbers[i];
     }
 
 
-    vector<vector<int>> sparseTable;
+    vector<vector<long long>> sparseTable;
     // preprocessing
     for (int i = 0; pow(2, i) <= numbers.size(); i++) {
         sparseTable.push_back({});
@@ -33,17 +33,15 @@ int main() {
         int from; int to;
         cin >> from; cin >> to; from--; to--;
         int qLength = to - from + 1;
-        int ans = 0;
-        int idx = 0;
+        long long ans = 0;
+        long long idx = 0;
         while (qLength > 0) {
             int greatestPowerOf2 = (int) log2(qLength);
 
             ans += sparseTable.at(greatestPowerOf2).at(from + idx);
 
-//            idx += pow(2, greatestPowerOf2);
-            idx += 1 << greatestPowerOf2;
-//            qLength -= pow(2, greatestPowerOf2);
-            qLength -= 1 << gre
+            idx += pow(2, greatestPowerOf2);
+            qLength -= pow(2, greatestPowerOf2);
         }
         cout << ans << "\n";
     }
