@@ -9,17 +9,21 @@ int maxPrice;
 vector<vector<int>> dp;
 
 int solveRecursively(int currentPrice, int idx, int currentPages) {
-    if (idx == prices.size()) {
-        return 0;
-    }
     if (currentPrice > maxPrice) {
         return 0;
     }
+    if (idx == prices.size()) {
+        return currentPages;
+    }
+    // if (dp.at(idx).at(currentPrice) != -1) {
+    //     return dp.at(idx).at(currentPrice);
+    // }
 
     int ans = currentPages;
     int ans1 = solveRecursively(currentPrice + prices.at(idx), idx + 1, currentPages + pages.at(idx));
     int ans2 = solveRecursively(currentPrice, idx + 1, currentPages);
     ans = max(ans, max(ans1, ans2));
+    dp.at(idx).at(currentPrice) = ans;
     return ans;
 }
 
