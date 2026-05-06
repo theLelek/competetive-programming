@@ -8,21 +8,19 @@ vector<int> pages;
 int maxPrice;
 vector<vector<int>> dp;
 
-int solveRecursively(int currentPrice, int idx) {
-    if (currentPrice > maxPrice) {
-        return 0;
-    }
+int solveRecursively(int currentPrice, int idx, int currentPages) {
     if (idx == prices.size()) {
         return 0;
     }
-    if (dp.at(idx).at(currentPrice) != -1) {
-        return dp.at(idx).at(currentPrice);
+    if (currentPrice > maxPrice) {
+        return 0;
     }
-    int best1 = pages.at(idx) + solveRecursively(currentPrice + prices.at(idx), idx + 1);
-    int best2 = solveRecursively(currentPrice, idx + 1);
-    int best = max(best1, best2);
-    dp.at(idx).at(currentPrice) = best;
-    return best;
+
+    int ans = currentPages;
+    int ans1 = solveRecursively(currentPrice + prices.at(idx), idx + 1, currentPages + pages.at(idx));
+    int ans2 = solveRecursively(currentPrice, idx + 1, currentPages);
+    ans = max(ans, max(ans1, ans2));
+    return ans;
 }
 
 int main() {
@@ -38,6 +36,6 @@ int main() {
         pages.push_back(c);
     }
 
-    cout << solveRecursively(0, 0);
+    cout << solveRecursively(0, 0, 0);
     return 0;
 }
