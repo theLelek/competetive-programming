@@ -26,6 +26,16 @@ int solveRecursively(int currentPrice, int idx) {
     return max(ans1, ans2);
 }
 
+int solveIteratively(int n) {
+    dp.at(0).assign(dp.at(0).size(), 0);;
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j <= maxPrice; j++) {
+            dp.at(i).at(j) = max(dp.at(i))?
+        }
+    }
+    //return dp.at(n - 1).at()
+}
+
 int main() {
     int n; cin >> n; int x; cin >> x;
     maxPrice = x;
@@ -40,5 +50,6 @@ int main() {
     }
 
     cout << solveRecursively(0, 0);
+//    cout << solveIteratively(n);
     return 0;
 }
