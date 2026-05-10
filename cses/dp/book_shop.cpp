@@ -1,5 +1,5 @@
+#include <climits>
 #include <iostream>
-#include <limits.h>
 #include <vector>
 
 using namespace std;
@@ -27,13 +27,18 @@ int solveRecursively(int currentPrice, int idx) {
 }
 
 int solveIteratively(int n) {
-    dp.at(0).assign(dp.at(0).size(), 0);;
+    dp.at(0).assign(dp.at(0).size(), 0);
     for (int i = 1; i < n; i++) {
         for (int j = 0; j <= maxPrice; j++) {
-            dp.at(i).at(j) = max(dp.at(i))?
+            int best1 = dp.at(i - 1).at(j);
+            int best2 = 0; // best2 should be pages from prev dp element + current pages
+            if (j - prices.at(i) >= 0) {
+                best2 = dp.at(i - 1).at(j - prices.at(i)) + pages.at(i);
+            }
+            dp.at(i).at(j) = max(best1, best2);
         }
     }
-    //return dp.at(n - 1).at()
+    return dp.at(n - 1).at(maxPrice);
 }
 
 int main() {
@@ -48,8 +53,6 @@ int main() {
         int c; cin >> c;
         pages.push_back(c);
     }
-
-    cout << solveRecursively(0, 0);
-//    cout << solveIteratively(n);
+    cout << solveIteratively(n);
     return 0;
 }
