@@ -47,6 +47,23 @@ int solveIteratively(int n, int x) {
     return dp.at(x);
 }
 
+int solveIteratively2(int n, int x) {
+    dp.at(0) = 0;
+    for (int i = 0; i < n; i++) {
+        // for price -> max number of pages
+        vector<int> dp2(x + 5, 0);
+        // numbers
+        int ans = INT_MIN;
+        for (int j = 1; j <= x; j++) {
+            int c = INT_MIN;
+            if (j - prices.at(i) >= 0) {
+                c = dp2.at(j - prices.at(i)) + pages.at(i);
+            }
+        }
+        dp.at()
+    }
+}
+
 int main() {
     int n; int x; cin >> n; cin >> x;
     for (int i = 0; i < n; i++) {
@@ -58,6 +75,6 @@ int main() {
         pages.push_back(c);
     }
     dp.resize(x + 5, -1);
-    cout << solveIteratively(n, x);;
+    cout << solveIteratively2(n, x);;
     return 0;
 }
