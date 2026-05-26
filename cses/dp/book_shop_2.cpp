@@ -30,40 +30,22 @@ vector<int> dp;
 // }
 
 int solveIteratively(int n, int x) {
-    // max number of pages that can be made with money
+    // get max number of pages with pages 0 - 1/2/...
     dp.at(0) = 0;
-    for (int i = 1; i <= x; i++) {
-        // from 0 - j
-        int ans = dp.at(i - 1);
-        for (int j = 0; j < n; j++) {
-            int c = INT_MIN;
-            if (i - prices.at(j) >= 0) {
-                c = dp.at(i - prices.at(j)) + pages.at(j);
+    // max number of pages with budget x with coins 0 - i
+    for (int i = 0; i < n; i++) {
+        cout << "";
+        // numbers
+        for (int j = x; j >= prices.at(i); j--) {
+            int c = max(0, dp.at(j));
+            if (j - prices.at(i) >= 0) {
+                c = max(c, dp.at(j - prices.at(i)) + pages.at(i));
             }
-            ans = max(ans, c);
+            dp.at(j) = c;
         }
-        dp.at(i) = ans;
     }
     return dp.at(x);
 }
-
-int solveIteratively2(int n, int x) {
-    dp.at(0) = 0;
-    for (int i = 0; i < n; i++) {
-        // for price -> max number of pages
-        vector<int> dp2(x + 5, 0);
-        // numbers
-        int ans = INT_MIN;
-        for (int j = 1; j <= x; j++) {
-            int c = INT_MIN;
-            if (j - prices.at(i) >= 0) {
-                c = dp2.at(j - prices.at(i)) + pages.at(i);
-            }
-        }
-        dp.at()
-    }
-}
-
 int main() {
     int n; int x; cin >> n; cin >> x;
     for (int i = 0; i < n; i++) {
@@ -74,7 +56,7 @@ int main() {
         int c; cin >> c;
         pages.push_back(c);
     }
-    dp.resize(x + 5, -1);
-    cout << solveIteratively2(n, x);;
+    dp.resize(x + 5, 0);
+    cout << solveIteratively(n, x);;
     return 0;
 }
