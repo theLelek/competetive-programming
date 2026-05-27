@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <vector>
 using namespace std;
 
@@ -6,16 +7,22 @@ using namespace std;
 vector<int> numbers;
 int m;
 
-int solveRecursively(int idx) {
+int solveRecursively(int idx, int prevValue) {
     if (idx == numbers.size()) {
-        return 0;
+        return 1;
     }
     int ans = 0;
     if (numbers.at(idx) == 0) {
-
+        for (int i = 1; i <= m; i++) {
+           if (abs(prevValue - i) <= 1 || idx == 0) {
+               ans += solveRecursively(idx + 1, i);
+           }
+        }
+    } else if (abs(prevValue - numbers.at(idx)) <= 1) {
+        ans += solveRecursively(idx + 1,  numbers.at(idx));
+    } else {
+        return 0;
     }
-
-    ans += solveRecursively(idx + 1);
     return ans;
 }
 
@@ -28,13 +35,6 @@ int main() {
         cin >> c;
         numbers.push_back(c);
     }
-    cout << solveRecursively();
-
-    // n numbers between 1 and  m,
-    // the absolute difference between two adjacent values is at most 1.
-    // value = 0 -> unknown value
-
-    // subproblem = number of arrays
-    // dp state = idx, prev 
+    cout << solveRecursively(0, numbers.at(0));
     return 0;
 }
