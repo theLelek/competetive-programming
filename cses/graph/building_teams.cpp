@@ -12,13 +12,17 @@ vector<int> out;
 
 void dfs(int idx, int depth) {
     if (visited.at(idx)) {
+        if (out.at(idx) != depth % 2 + 1) {
+            cout << "IMPOSSIBLE";
+            exit(0);
+        }
         return;
     }
     visited.at(idx) = true;
+    out.at(idx) = depth % 2 + 1;
     for (int c : adjacencyList.at(idx)) {
         dfs(c, depth + 1);
     }
-    out.at(idx) = depth % 2 + 1;
 }
 
 int main() {
@@ -36,7 +40,11 @@ int main() {
     }
 
     for (int i = 1; i <= n; i++) {
-        dfs(i, 0);
+        if (! visited.at(i)) {
+            dfs(i, 0);
+        }
+    }
+    for (int i = 1; i < out.size(); i++) {
         cout << out.at(i) << " ";
     }
     return 0;
