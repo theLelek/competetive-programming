@@ -4,9 +4,8 @@
 
 using namespace std;
 
-vector<int> dp;
 vector<int> numbers;
-set<int> out;
+vector<bool> dp;
 
 
 // void solveRecursively(int idx, int currentSum) {
@@ -19,31 +18,50 @@ set<int> out;
 //     solveRecursively(idx + 1, currentSum);
 // }
 
-void solveIteratively(int n) {
-    out.insert(numbers.at(0));
-    for (int i = 1; i < n; i++) {
-        set<int> holder;
-        int ans1 = numbers.at(i);
-        holder.insert(ans1);
-        for (int element : out) {
-            int ans2 = element;
-            int ans3 = ans1 + ans2;
-            holder.insert(ans2);
-            holder.insert(ans3);
+void addElements(vector<bool> &a, vector<bool> b) {
+    for (int i = 0; i < b.size(); i++) {
+        if (b.at(i)) {
+            a.at(i) = true;
         }
-        out.insert(holder.begin(), holder.end());
     }
 }
+
+void solveIteratively(int n) {
+//    dp.insert(numbers.at(0));
+    dp.at(numbers.at(0)) = true;
+    for (int i = 1; i < n; i++) {
+        vector<bool> holder(dp.size());
+        int ans1 = numbers.at(i);
+        holder.at(ans1) = true;
+
+        for (int i = 0; i < dp.size(); i++) {
+            if (! dp.at(i)) continue;
+            int ans2 = i;
+            int ans3 = ans1 + ans2;
+            holder.at(ans3) = true;
+        }
+        addElements(dp, holder);
+    }
+}
+
 
 int main() {
     int n; cin >> n;
     for (int i = 0; i < n; i++) {
         int c; cin >> c; numbers.push_back(c);
     }
+    dp.resize(100 * 1000 + 5);
     solveIteratively(n);
+
+    vector<int> out;
+    for (int i = 0; i < dp.size(); i++) {
+        if (! dp.at(i)) continue;
+        out.push_back(i);
+    }
+
     cout << out.size() << "\n";
-    for (int element : out) {
-        cout << element << " ";
+    for (int i = 0; i < out.size(); i++) {
+        cout << out.at(i) << " ";
     }
     return 0;
 }
