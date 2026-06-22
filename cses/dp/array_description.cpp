@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 vector<int> numbers;
 int m;
 vector<vector<int>> dp;
@@ -24,7 +23,8 @@ int solveRecursively(int idx, int prevValue) {
         }
         ans += solveRecursively(idx + 1, m + 2); // todo
         ans %= 1000000007;
-        dp.at(idx).at(numbers.at(idx)) = ans;
+//        dp.at(idx).at(numbers.at(idx)) = ans;
+        dp.at(idx).at(prevValue) = ans;
         return ans;
     }
 
