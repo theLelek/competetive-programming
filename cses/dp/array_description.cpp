@@ -1,14 +1,15 @@
-#include <limits.h>
 #include <vector>
+#include <iostream>
+
 using namespace std;
 
-#include <iostream>
 
 vector<int> numbers;
 int m;
 vector<vector<int>> dp;
 
 int solveRecursively(int idx, int prevValue) {
+    if (prevValue == m + 2) prevValue = numbers.at(idx - 1);
     if (idx == numbers.size()) {
         return 1;
     }
@@ -21,7 +22,7 @@ int solveRecursively(int idx, int prevValue) {
         if (abs(prevValue - numbers.at(idx)) > 1) {
             return 0;
         }
-        ans += solveRecursively(idx + 1, numbers.at(idx));
+        ans += solveRecursively(idx + 1, m + 2); // todo
         ans %= 1000000007;
         dp.at(idx).at(numbers.at(idx)) = ans;
         return ans;
