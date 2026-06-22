@@ -16,18 +16,22 @@ int solveRecursively(int idx, int prevValue) {
         return dp.at(idx).at(prevValue);
     }
     int ans = 0;
-    if (numbers.at(idx) == 0) {
-        for (int i = 1; i <= m; i++) {
-           if (abs(prevValue - i) <= 1 || idx == 0) {
-               ans += solveRecursively(idx + 1, i);
-               ans %= 1000000007;
-           }
+
+    if (numbers.at(idx) != 0) {
+        if (abs(prevValue - numbers.at(idx)) > 1) {
+            return 0;
         }
-    } else if (abs(prevValue - numbers.at(idx)) <= 1) {
-        ans += solveRecursively(idx + 1,  numbers.at(idx));
+        ans += solveRecursively(idx + 1, numbers.at(idx));
         ans %= 1000000007;
-    } else {
-        return 0;
+        dp.at(idx).at(numbers.at(idx)) = ans;
+        return ans;
+    }
+
+    for (int i = 1; i <= m; i++) {
+        if (abs(prevValue - i) <= 1 || idx == 0) {
+            ans += solveRecursively(idx + 1, i);
+            ans %= 1000000007;
+        }
     }
     dp.at(idx).at(prevValue) = ans;
     return ans;
