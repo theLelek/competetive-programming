@@ -3,12 +3,12 @@
 
 using namespace std;
 
+
 vector<int> numbers;
 int m;
 vector<vector<int>> dp;
 
 int solveRecursively(int idx, int prevValue) {
-    if (prevValue == m + 2) prevValue = numbers.at(idx - 1);
     if (idx == numbers.size()) {
         return 1;
     }
@@ -21,15 +21,16 @@ int solveRecursively(int idx, int prevValue) {
         if (abs(prevValue - numbers.at(idx)) > 1) {
             return 0;
         }
-        ans += solveRecursively(idx + 1, m + 2); // todo
+        ans += solveRecursively(idx + 1, numbers.at(idx));
         ans %= 1000000007;
-//        dp.at(idx).at(numbers.at(idx)) = ans;
-        dp.at(idx).at(prevValue) = ans;
+        dp.at(idx).at(numbers.at(idx)) = ans;
         return ans;
     }
 
-    for (int i = 1; i <= m; i++) {
-        if (abs(prevValue - i) <= 1 || idx == 0) {
+    for (int i = prevValue - 1; i <= m; i++) {
+        if (i == 0 || i == -1) continue;
+        if (i > prevValue + 1 && prevValue != 0) break;
+        if (abs(prevValue - i) <= 1 || idx == 0 || prevValue == 0) {
             ans += solveRecursively(idx + 1, i);
             ans %= 1000000007;
         }
