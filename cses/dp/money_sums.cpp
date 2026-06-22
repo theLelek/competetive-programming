@@ -20,22 +20,18 @@ set<int> out;
 // }
 
 void solveIteratively(int n) {
-    dp.push_back(numbers.at(0));
     out.insert(numbers.at(0));
     for (int i = 1; i < n; i++) {
-        vector<int> holder;
+        set<int> holder;
         int ans1 = numbers.at(i);
-        out.insert(ans1);
-        holder.push_back(ans1);
-        for (int j = 0; j < dp.size(); j++) {
-            int ans2 = dp.at(j);
+        holder.insert(ans1);
+        for (int element : out) {
+            int ans2 = element;
             int ans3 = ans1 + ans2;
-            out.insert(ans2);
-            out.insert(ans3);
-            holder.push_back(ans2);
-            holder.push_back(ans3);
+            holder.insert(ans2);
+            holder.insert(ans3);
         }
-        dp = holder;
+        out.insert(holder.begin(), holder.end());
     }
 }
 
