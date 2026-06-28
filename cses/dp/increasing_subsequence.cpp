@@ -9,23 +9,21 @@ vector<int> numbers;
 
 vector<vector<int>> dp;
 
-int solveRecursively1(int idx, int prevValue) {
+int solveRecursively(int idx, int prevIndex) {
     if (idx == n) {
         return 0;
     }
-    if (numbers.at(idx) <= prevValue) {
-        return 0;
+    if (numbers.at(idx) <= numbers.at(prevIndex) && prevIndex != -1) {
+        return INT_MIN / 2;
+    }
+    if (prevIndex != -1 && dp.at(idx).at(numbers.at(prevIndex)) != -1) {
+        return dp.at(idx).at(numbers.at(prevIndex));
     }
 
-    if (dp.at(idx).at(prevValue) != -1) {
-        return dp.at(idx).at(prevValue);
-    }
-
-    int ans = INT_MIN;
-    for (int i = idx; i < n; i++) {
-        ans = max(ans, 1 + solveRecursively1(i + 1, numbers.at(i)));
-    }
-    dp.at(idx).at(prevValue) = ans;
+    int foo1 = solveRecursively(idx + 1, prevIndex);
+    int foo2 = solveRecursively(idx + 1, idx);
+    int ans = max(foo1, foo2);
+    dp.at(idx).at(numbers.at(prevIndex)) = ans;
     return ans;
 }
 
@@ -38,6 +36,6 @@ int main() {
         numbers.push_back(c);
     }
     dp.resize(n + 5, vector<int>(highest + 5, -1));
-    cout << solveRecursively1(0, 0);
+    cout << solveRecursively(0, -1);
     return 0;
 }
