@@ -1,5 +1,5 @@
+#include <algorithm>
 #include <iostream>
-#include <limits.h>
 #include <vector>
 
 using namespace std;
@@ -30,29 +30,30 @@ vector<int> dp;
 // }
 
 int solveIteratively() {
-    dp.resize(n + 5, -1);
-
-    for (int i = 0; i < n; i++) {
+    dp.resize(n + 5, 1);
+    int out = 1;
+    for (int i = 1; i < n; i++) {
+        // idx
         for (int j = 0; j < i; j++) {
-            if (dp.at(j) >= dp.at(i)) {
-                continue;
+            // prev idx
+            int foo = 1;
+            if (numbers.at(i) > numbers.at(j)) {
+                foo = 1 + dp.at(j);
             }
 
-            dp.at()
+            dp.at(i) = max(dp.at(i), foo);
+            out = max(out, dp.at(i));
         }
     }
-
-
+    return out;
 }
 
 int main() {
     cin >> n;
-    int highest = 0;
     for (int i = 0; i < n; i++) {
         int c; cin >> c;
-        highest = max(c, highest);
         numbers.push_back(c);
     }
-    cout << solveRecursively(0, -1);
+    cout << solveIteratively();
     return 0;
 }
