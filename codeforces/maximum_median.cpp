@@ -7,10 +7,10 @@ using namespace std;
 int n; int k;
 vector<int> numbers;
 
-int getOperations(int medianIncrease) {
+long long getOperations(int medianIncrease) {
     int medianIdx = numbers.size() / 2;
-    int count = 0;
-    int medianToSet = numbers.at(medianIdx) + medianIncrease;
+    long long count = 0;
+    long medianToSet = numbers.at(medianIdx) + medianIncrease;
     for (int i = medianIdx; i < numbers.size(); i++) {
         if (numbers.at(i) >= medianToSet) {
             continue;
@@ -22,7 +22,7 @@ int getOperations(int medianIncrease) {
 }
 
 bool isTrue(int m) {
-    return getOperations(m) <= k;
+    return getOperations(m) <= ((long long) k);
 }
 
 int lastTrue(int l, int r) {
@@ -53,9 +53,9 @@ int main() {
 
     int medianIndex = numbers.size() / 2;
 
-    int lastTrueIndex = lastTrue(1, k + 5);
+    int lastTrueIndex = lastTrue(0, k + 5);
 
-    if (lastTrueIndex == 0) {
+    if (lastTrueIndex == -1) {
         cout << numbers.at(medianIndex);
     } else {
         cout << numbers.at(medianIndex) + lastTrueIndex;
