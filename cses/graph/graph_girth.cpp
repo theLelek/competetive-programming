@@ -1,31 +1,42 @@
 #include <iostream>
 #include <limits.h>
+#include <queue>
 #include <vector>
-
 
 using namespace std;
 
 vector<vector<int>> adjList;
 vector<bool> visited;
-vector<int> dist;
 
-int getGirth(int current, int previous) {
-    if (visited.at(current) && current != previous) {
-        return dist.at(previous) - dist.at(current) + 1;
+struct element {
+    int node;
+    int distance;
+    int previous;
+};
+
+int bfs(int root) {
+    queue<element> q;
+    q.push({1, 0, 1});
+    while (! q.empty()) {
+        element current = q.front();
+        q.pop();
+
+        if (current.node == root && current.distance != 0) {
+            return current.distance;
+        }
+        if (visited.at(current.node)) {
+            continue;
+        }
+        visited.at(current.node) = true;
+
+        for (int i = 0; i < adjList.at(current.node).size(); i++) {
+            if (adjList.at(current.node).at(i) == current.previous) continue;
+            q.push({adjList.at(current.node).at(i), current.distance + 1, current.node});
+        }
     }
-    visited.at(current) = true;
-    dist.at(current) = dist.at(previous) + 1;
-
-    int out = INT_MAX;
-    for (int i = 0; i < adjList.at(current).size(); i++) {
-        if (adjList.at(current).at(i) == previous || adjList.at(current).at(i) == current) continue;
-
-        out = min(out, getGirth(adjList.at(current).at(i), current));
-    }
-    visited.at(current) = false;
-    dist.at(current) = 0;
-    return out;
+    return INT_MAX;
 }
+
 
 int main() {
     int n; int m;
@@ -33,7 +44,6 @@ int main() {
 
     adjList.resize(n + 1);
     visited.resize(n + 1);
-    dist.resize(n + 1);
 
     for (int i = 0; i < m; i++) {
         int a; int b;
@@ -42,8 +52,11 @@ int main() {
         adjList.at(b).push_back(a);
     }
 
-    dist.at(1) = -1;
-    cout << getGirth(1, 1);
-
+    int out = INT_MAX;
+    for (int i = 1; i <= n; i++) {
+        visited.resize(n + 1);
+        out = min(out, bfs(i));
+    }
+    cout << out;
     return 0;
 }
