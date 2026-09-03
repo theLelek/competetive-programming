@@ -7,34 +7,39 @@ using namespace std;
 
 vector<vector<int>> adjList;
 vector<bool> visited;
+vector<int> dist;
 
 struct element {
     int node;
-    int distance;
     int previous;
 };
 
 int bfs(int root) {
     queue<element> q;
-    q.push({1, 0, 1});
+    q.push({root, root});
+    dist.at(root) = -1;
+
+    int ans = INT_MAX;
+
     while (! q.empty()) {
         element current = q.front();
         q.pop();
 
-        if (current.node == root && current.distance != 0) {
-            return current.distance;
-        }
         if (visited.at(current.node)) {
+            int cycleLength = 1 + dist.at(current.node) + dist.at(current.previous);
+            ans = min(ans, cycleLength);
             continue;
         }
         visited.at(current.node) = true;
 
+        dist.at(current.node) = 1 + dist.at(current.previous);
+
         for (int i = 0; i < adjList.at(current.node).size(); i++) {
             if (adjList.at(current.node).at(i) == current.previous) continue;
-            q.push({adjList.at(current.node).at(i), current.distance + 1, current.node});
+            q.push({adjList.at(current.node).at(i), current.node});
         }
     }
-    return INT_MAX;
+    return ans;
 }
 
 
@@ -44,6 +49,7 @@ int main() {
 
     adjList.resize(n + 1);
     visited.resize(n + 1);
+    dist.resize(n + 1);
 
     for (int i = 0; i < m; i++) {
         int a; int b;
@@ -54,9 +60,12 @@ int main() {
 
     int out = INT_MAX;
     for (int i = 1; i <= n; i++) {
-        visited.resize(n + 1);
-        out = min(out, bfs(i));
+        fill(visited.begin(), visited.end(), false);
+        fill(dist.begin(), dist.end(), false);
+
+        int foo = bfs(i);
+        out = min(out, foo);
     }
-    cout << out;
+    cout << (out == INT_MAX ? -1 : out);
     return 0;
 }
